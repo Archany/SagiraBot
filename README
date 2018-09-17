@@ -1,0 +1,4 @@
+Just a crappy little discord bot I'm using to learn python. discord-token.ini ref'd in main.py is used to define the token outside of my main bot using
+
+[discord]
+token = XXXXX

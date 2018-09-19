@@ -67,8 +67,9 @@ async def on_message(message):
 
 	# Retrieving lore entries from ishtar
 	if message.content.startswith("!lore"):
-		search_term = quote(message.content[6:]) # set to variable everything after "!lore "
-		entries_url = ("https://www.ishtar-collective.net/entries/" + search_term)
+		search_term = quote(message.content[6:]) # Site is bad so we have to URL-encode these
+		entries_term = (message.content[6:].replace(' ', '-')) # and convert spaces to - for these
+		entries_url = ("https://www.ishtar-collective.net/entries/" + entries_term)
 		search_url = ("https://www.ishtar-collective.net/search/" + search_term)
 		r = requests.get(entries_url)
 		if r.status_code == requests.codes.ok:

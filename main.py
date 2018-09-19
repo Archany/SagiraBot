@@ -2,6 +2,8 @@
 import discord
 import configparser
 import asyncio
+import requests
+from urllib.request import quote
 
 discordconf = configparser.ConfigParser()
 discordconf.read('discord-token.ini')
@@ -28,6 +30,10 @@ async def on_message(message):
 
 	if message.content.lower().startswith('!mars'):
 		msg = "```Whether we wanted it or not, we've stepped into a war with the Cabal on Mars. So let's get to taking out their command, one by one. Valus Ta'aurc. From what I can gather he commands the Siege Dancers from an Imperial Land Tank outside of Rubicon. He's well protected, but with the right team, we can punch through those defenses, take this beast out, and break their grip on Freehold.```"
+		await client.send_message(message.channel, msg)
+
+	if message.content.lower().startswith('!badbot'):
+		msg = "You're not even my real guardian."
 		await client.send_message(message.channel, msg)
 
 	#messing around with role assigning
@@ -58,6 +64,19 @@ async def on_message(message):
 				await client.send_message(message.channel, "Successfully added role {0}".format(role.name))
 			except discord.Forbidden:
 				await client.send_message(message.channel, "I don't have perms to add roles") #either bot doesn't have the "Manage roles" permission, or it's below the needed roles in the priority list
+
+	# Retrieving lore entries from ishtar
+	if message.content.startswith("!lore"):
+		search_term = quote(message.content[6:]) # set to variable everything after "!lore "
+		entries_url = ("https://www.ishtar-collective.net/entries/" + search_term)
+		search_url = ("https://www.ishtar-collective.net/search/" + search_term)
+		r = requests.get(entries_url)
+		if r.status_code == requests.codes.ok:
+			msg = (entries_url)
+			await client.send_message(message.channel, msg)
+		else:
+			msg = (search_url)
+			await client.send_message(message.channel, msg)
 
 @client.event
 async def on_ready():
